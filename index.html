@@ -2,99 +2,118 @@
 <html lang="az">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Paneli</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Testlər</title>
+
+  <!-- Firebase App (core SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+
+  <!-- Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
-      padding: 20px;
+      margin: 20px;
+      background-color: #f4f4f9;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    h1 {
+      color: #333;
     }
-    h2 {
-      text-align: center;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
+
+    .form-container {
       margin-top: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container label {
+      font-size: 1.1em;
+    }
+
+    .form-container input,
+    .form-container textarea {
       width: 100%;
       padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .form-container button {
       background-color: #4CAF50;
       color: white;
       border: none;
-      border-radius: 5px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 1em;
       cursor: pointer;
+      border-radius: 4px;
     }
-    button:hover {
+
+    .form-container button:hover {
       background-color: #45a049;
-    }
-    .output {
-      margin-top: 20px;
-      background: #eef;
-      padding: 10px;
-      border-radius: 5px;
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>Admin Paneli - Yeni Test Əlavə Et</h2>
+  <h1>Admin Panel - Testlər Yarat</h1>
 
-    <label for="title">Test Başlığı</label>
-    <input type="text" id="title" placeholder="Məsələn: Riyaziyyat Testi 1">
+  <div class="form-container">
+    <h2>Yeni Test Əlavə et</h2>
+    <form id="testForm">
+      <label for="testName">Testin Adı:</label>
+      <input type="text" id="testName" required />
 
-    <label for="description">Təsvir</label>
-    <textarea id="description" rows="3" placeholder="Qısa təsvir yaz..."></textarea>
+      <label for="testDescription">Testin Təsviri:</label>
+      <textarea id="testDescription" rows="4" required></textarea>
 
-    <label for="questions">Suallar (hər sətirə bir sual yaz)</label>
-    <textarea id="questions" rows="5" placeholder="1. Sual?\n2. Sual?\n..."></textarea>
-
-    <button onclick="addTest()">Testi Əlavə Et</button>
-
-    <div class="output" id="outputBox" style="display:none;">
-      <h3>Əlavə Olunan Test:</h3>
-      <pre id="output"></pre>
-    </div>
+      <button type="submit">Testi Yadda Saxla</button>
+    </form>
   </div>
 
   <script>
-    function addTest() {
-      const title = document.getElementById('title').value;
-      const desc = document.getElementById('description').value;
-      const questions = document.getElementById('questions').value.split('\n');
+    // Firebase Configuration (göstərdiyin kod)
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
+      authDomain: "examsite-88677.firebaseapp.com",
+      projectId: "examsite-88677",
+      storageBucket: "examsite-88677.firebasestorage.app",
+      messagingSenderId: "222884334734",
+      appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
+      measurementId: "G-JG51X31NXX"
+    };
 
-      const test = {
-        basliq: title,
-        tesvir: desc,
-        suallar: questions
-      };
+    // Firebase-in başlatması
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-      console.log('Yeni test əlavə olundu:', test);
+    // Test formunu idarə edirik
+    document.getElementById('testForm').addEventListener('submit', function(e) {
+      e.preventDefault();
 
-      document.getElementById('outputBox').style.display = 'block';
-      document.getElementById('output').textContent = JSON.stringify(test, null, 2);
-    }
+      const testName = document.getElementById('testName').value;
+      const testDescription = document.getElementById('testDescription').value;
+
+      // Firestore-a test əlavə et
+      db.collection('tests').add({
+        name: testName,
+        description: testDescription,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert('Test uğurla əlavə edildi!');
+        document.getElementById('testForm').reset();
+      }).catch((error) => {
+        alert('Xəta baş verdi: ' + error.message);
+      });
+    });
   </script>
 </body>
 </html>
+
 
 
 
