@@ -1,61 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Paneli</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+  <script>
+    // Firebase Konfiqurasiyası
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
+      authDomain: "examsite-88677.firebaseapp.com",
+      projectId: "examsite-88677",
+      storageBucket: "examsite-88677.firebasestorage.app",
+      messagingSenderId: "222884334734",
+      appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
+      measurementId: "G-JG51X31NXX"
+    };
+
+    // Firebase-i başlatmaq
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
-    <h1>Admin Panel</h1>
-    <form id="testForm">
-        <label for="testName">Test adı:</label>
-        <input type="text" id="testName" name="testName" required>
-        <br>
-        <label for="testDescription">Test izahı:</label>
-        <textarea id="testDescription" name="testDescription" required></textarea>
-        <br>
-        <button type="submit">Testi əlavə et</button>
-    </form>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <h1>Admin Paneli - Test Əlavə Et</h1>
+  <form id="addTestForm">
+    <label for="testName">Test adı:</label>
+    <input type="text" id="testName" placeholder="Testin adını daxil edin">
+    <br>
+    <label for="testDescription">Test təsviri:</label>
+    <textarea id="testDescription" placeholder="Testin təsvirini daxil edin"></textarea>
+    <br>
+    <button type="submit">Testi Əlavə Et</button>
+  </form>
 
-    <script>
-        // Firebase konfiqurasiyası
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
-            authDomain: "examsite-88677.firebaseapp.com",
-            projectId: "examsite-88677",
-            storageBucket: "examsite-88677.firebasestorage.app",
-            messagingSenderId: "222884334734",
-            appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
-            measurementId: "G-JG51X31NXX"
-        };
+  <script>
+    // Formdan testləri Firestore-a əlavə etmək
+    document.getElementById('addTestForm').addEventListener('submit', function(e) {
+      e.preventDefault();  // Formun göndərilməsinin qarşısını alır
 
-        // Firebase-in başlatılması
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+      const testName = document.getElementById('testName').value;
+      const testDescription = document.getElementById('testDescription').value;
 
-        // Test əlavə etmə
-        document.getElementById('testForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+      db.collection('tests').add({
+        name: testName,
+        description: testDescription
+      }).then(() => {
+        alert('Test uğurla əlavə olundu!');
+        document.getElementById('addTestForm').reset();
+      }).catch((error) => {
+        console.error("Test əlavə edilərkən səhv baş verdi: ", error);
+      });
+    });
+  </script>
 
-            const testName = document.getElementById('testName').value;
-            const testDescription = document.getElementById('testDescription').value;
-
-            // Firestore-a test əlavə et
-            db.collection('tests').add({
-                name: testName,
-                description: testDescription,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert('Test uğurla əlavə edildi!');
-                document.getElementById('testForm').reset();
-            }).catch((error) => {
-                alert('Xəta baş verdi: ' + error.message);
-            });
-        });
-    </script>
 </body>
 </html>
-
