@@ -1,128 +1,48 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şagirdlər üçün Testlər</title>
-
-  <!-- Firebase SDK-ləri -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f4f4f9;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    .test-list {
-      margin-top: 20px;
-    }
-
-    .test-item {
-      padding: 10px;
-      background-color: #f9f9f9;
-      margin-bottom: 10px;
-      border-radius: 4px;
-    }
-
-    .form-container {
-      margin-top: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-container input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    .form-container button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .form-container button:hover {
-      background-color: #45a049;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Şagirdlər Paneli</title>
 </head>
-
 <body>
-  <h1>Şagirdlər üçün Testlər</h1>
-  <div class="test-list" id="testList"></div>
+    <h1>Şagirdlər Paneli</h1>
+    <div id="testList">
+        <!-- Testlər burada göstəriləcək -->
+    </div>
 
-  <div class="form-container">
-    <h3>Cavabınızı daxil edin:</h3>
-    <form id="answerForm">
-      <label for="testAnswer">Cavabınızı yazın:</label>
-      <input type="text" id="testAnswer" required />
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
-      <button type="submit">Cavabı Göndər</button>
-    </form>
-  </div>
+    <script>
+        // Firebase konfiqurasiyası
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
+            authDomain: "examsite-88677.firebaseapp.com",
+            projectId: "examsite-88677",
+            storageBucket: "examsite-88677.firebasestorage.app",
+            messagingSenderId: "222884334734",
+            appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
+            measurementId: "G-JG51X31NXX"
+        };
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
-      authDomain: "examsite-88677.firebaseapp.com",
-      projectId: "examsite-88677",
-      storageBucket: "examsite-88677.firebasestorage.app",
-      messagingSenderId: "222884334734",
-      appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
-      measurementId: "G-JG51X31NXX"
-    };
+        // Firebase-in başlatılması
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    // Testləri Firestore-dan çəkirik
-    db.collection('tests').get().then(snapshot => {
-      const testList = document.getElementById('testList');
-      snapshot.forEach(doc => {
-        const test = doc.data();
-        const testElement = document.createElement('div');
-        testElement.classList.add('test-item');
-        testElement.innerHTML = `<h3>${test.name}</h3><p>${test.description}</p>`;
-        testList.appendChild(testElement);
-      });
-    }).catch(error => {
-      console.error('Xəta baş verdi:', error);
-    });
-
-    // Cavab göndərmək üçün formu idarə edirik
-    document.getElementById('answerForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const testAnswer = document.getElementById('testAnswer').value;
-
-      // Cavabı Firestore-a göndəririk
-      db.collection('answers').add({
-        answer: testAnswer,
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert('Cavab uğurla göndərildi!');
-        document.getElementById('answerForm').reset();
-      }).catch((error) => {
-        alert('Xəta baş verdi: ' + error.message);
-      });
-    });
-  </script>
+        // Firestore-dan testləri almaq
+        db.collection('tests').onSnapshot(snapshot => {
+            const testList = document.getElementById('testList');
+            testList.innerHTML = ''; // Hər yeni yükləmədə mövcud testləri təmizləyirik
+            snapshot.forEach(doc => {
+                const test = doc.data();
+                const testElement = document.createElement('div');
+                testElement.classList.add('test-item');
+                testElement.innerHTML = `<h3>${test.name}</h3><p>${test.description}</p>`;
+                testList.appendChild(testElement);
+            });
+        });
+    </script>
 </body>
 </html>
 
