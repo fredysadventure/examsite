@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Testlər</title>
+  <title>Şagirdlər üçün Testlər</title>
 
-  <!-- Firebase App (core SDK) -->
+  <!-- Firebase SDK-ləri -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-
-  <!-- Firestore -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
   <style>
@@ -22,6 +20,17 @@
       color: #333;
     }
 
+    .test-list {
+      margin-top: 20px;
+    }
+
+    .test-item {
+      padding: 10px;
+      background-color: #f9f9f9;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
     .form-container {
       margin-top: 20px;
       padding: 20px;
@@ -30,12 +39,7 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .form-container label {
-      font-size: 1.1em;
-    }
-
-    .form-container input,
-    .form-container textarea {
+    .form-container input {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -60,23 +64,20 @@
 </head>
 
 <body>
-  <h1>Admin Panel - Testlər Yarat</h1>
+  <h1>Şagirdlər üçün Testlər</h1>
+  <div class="test-list" id="testList"></div>
 
   <div class="form-container">
-    <h2>Yeni Test Əlavə et</h2>
-    <form id="testForm">
-      <label for="testName">Testin Adı:</label>
-      <input type="text" id="testName" required />
+    <h3>Cavabınızı daxil edin:</h3>
+    <form id="answerForm">
+      <label for="testAnswer">Cavabınızı yazın:</label>
+      <input type="text" id="testAnswer" required />
 
-      <label for="testDescription">Testin Təsviri:</label>
-      <textarea id="testDescription" rows="4" required></textarea>
-
-      <button type="submit">Testi Yadda Saxla</button>
+      <button type="submit">Cavabı Göndər</button>
     </form>
   </div>
 
   <script>
-    // Firebase Configuration (göstərdiyin kod)
     const firebaseConfig = {
       apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
       authDomain: "examsite-88677.firebaseapp.com",
@@ -87,25 +88,36 @@
       measurementId: "G-JG51X31NXX"
     };
 
-    // Firebase-in başlatması
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Test formunu idarə edirik
-    document.getElementById('testForm').addEventListener('submit', function(e) {
+    // Testləri Firestore-dan çəkirik
+    db.collection('tests').get().then(snapshot => {
+      const testList = document.getElementById('testList');
+      snapshot.forEach(doc => {
+        const test = doc.data();
+        const testElement = document.createElement('div');
+        testElement.classList.add('test-item');
+        testElement.innerHTML = `<h3>${test.name}</h3><p>${test.description}</p>`;
+        testList.appendChild(testElement);
+      });
+    }).catch(error => {
+      console.error('Xəta baş verdi:', error);
+    });
+
+    // Cavab göndərmək üçün formu idarə edirik
+    document.getElementById('answerForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      const testName = document.getElementById('testName').value;
-      const testDescription = document.getElementById('testDescription').value;
+      const testAnswer = document.getElementById('testAnswer').value;
 
-      // Firestore-a test əlavə et
-      db.collection('tests').add({
-        name: testName,
-        description: testDescription,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      // Cavabı Firestore-a göndəririk
+      db.collection('answers').add({
+        answer: testAnswer,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        alert('Test uğurla əlavə edildi!');
-        document.getElementById('testForm').reset();
+        alert('Cavab uğurla göndərildi!');
+        document.getElementById('answerForm').reset();
       }).catch((error) => {
         alert('Xəta baş verdi: ' + error.message);
       });
@@ -113,7 +125,6 @@
   </script>
 </body>
 </html>
-
 
 
 
