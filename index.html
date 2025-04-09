@@ -1,12 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Paneli</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .output {
+      margin-top: 20px;
+      background: #eef;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Test Admin Paneli</h1>
-  <p>Buradan test əlavə edə bilərsiniz.</p>
+  <div class="container">
+    <h2>Admin Paneli - Yeni Test Əlavə Et</h2>
+
+    <label for="title">Test Başlığı</label>
+    <input type="text" id="title" placeholder="Məsələn: Riyaziyyat Testi 1">
+
+    <label for="description">Təsvir</label>
+    <textarea id="description" rows="3" placeholder="Qısa təsvir yaz..."></textarea>
+
+    <label for="questions">Suallar (hər sətirə bir sual yaz)</label>
+    <textarea id="questions" rows="5" placeholder="1. Sual?\n2. Sual?\n..."></textarea>
+
+    <button onclick="addTest()">Testi Əlavə Et</button>
+
+    <div class="output" id="outputBox" style="display:none;">
+      <h3>Əlavə Olunan Test:</h3>
+      <pre id="output"></pre>
+    </div>
+  </div>
+
+  <script>
+    function addTest() {
+      const title = document.getElementById('title').value;
+      const desc = document.getElementById('description').value;
+      const questions = document.getElementById('questions').value.split('\n');
+
+      const test = {
+        basliq: title,
+        tesvir: desc,
+        suallar: questions
+      };
+
+      console.log('Yeni test əlavə olundu:', test);
+
+      document.getElementById('outputBox').style.display = 'block';
+      document.getElementById('output').textContent = JSON.stringify(test, null, 2);
+    }
+  </script>
 </body>
 </html>
+
 
 
