@@ -1,108 +1,61 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Paneli</title>
-  
-  <!-- Firebase SDK-ləri -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f4f4f9;
-    }
-
-    h1 {
-      color: #333;
-    }
-
-    .form-container {
-      margin-top: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-container label {
-      font-size: 1.1em;
-    }
-
-    .form-container input,
-    .form-container textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    .form-container button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .form-container button:hover {
-      background-color: #45a049;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
 </head>
-
 <body>
-  <h1>Admin Paneli</h1>
-  <div class="form-container">
-    <h3>Yeni Test Əlavə et</h3>
+    <h1>Admin Panel</h1>
     <form id="testForm">
-      <label for="testName">Testin Adı:</label>
-      <input type="text" id="testName" required />
-
-      <label for="testDescription">Testin Təsviri:</label>
-      <textarea id="testDescription" rows="4" required></textarea>
-
-      <button type="submit">Testi Yadda Saxla</button>
+        <label for="testName">Test adı:</label>
+        <input type="text" id="testName" name="testName" required>
+        <br>
+        <label for="testDescription">Test izahı:</label>
+        <textarea id="testDescription" name="testDescription" required></textarea>
+        <br>
+        <button type="submit">Testi əlavə et</button>
     </form>
-  </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
-      authDomain: "examsite-88677.firebaseapp.com",
-      projectId: "examsite-88677",
-      storageBucket: "examsite-88677.firebasestorage.app",
-      messagingSenderId: "222884334734",
-      appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
-      measurementId: "G-JG51X31NXX"
-    };
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    <script>
+        // Firebase konfiqurasiyası
+        const firebaseConfig = {
+            apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
+            authDomain: "examsite-88677.firebaseapp.com",
+            projectId: "examsite-88677",
+            storageBucket: "examsite-88677.firebasestorage.app",
+            messagingSenderId: "222884334734",
+            appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
+            measurementId: "G-JG51X31NXX"
+        };
 
-    document.getElementById('testForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+        // Firebase-in başlatılması
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-      const testName = document.getElementById('testName').value;
-      const testDescription = document.getElementById('testDescription').value;
+        // Test əlavə etmə
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-      db.collection('tests').add({
-        name: testName,
-        description: testDescription,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert('Test uğurla əlavə edildi!');
-        document.getElementById('testForm').reset();
-      }).catch((error) => {
-        alert('Xəta baş verdi: ' + error.message);
-      });
-    });
-  </script>
+            const testName = document.getElementById('testName').value;
+            const testDescription = document.getElementById('testDescription').value;
+
+            // Firestore-a test əlavə et
+            db.collection('tests').add({
+                name: testName,
+                description: testDescription,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                alert('Test uğurla əlavə edildi!');
+                document.getElementById('testForm').reset();
+            }).catch((error) => {
+                alert('Xəta baş verdi: ' + error.message);
+            });
+        });
+    </script>
 </body>
 </html>
+
