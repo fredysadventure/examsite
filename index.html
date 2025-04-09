@@ -1,50 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Şagirdlər Paneli</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Şagirdlər Paneli</title>
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+  <script>
+    // Firebase Konfiqurasiyası
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
+      authDomain: "examsite-88677.firebaseapp.com",
+      projectId: "examsite-88677",
+      storageBucket: "examsite-88677.firebasestorage.app",
+      messagingSenderId: "222884334734",
+      appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
+      measurementId: "G-JG51X31NXX"
+    };
+
+    // Firebase-i başlatmaq
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
-    <h1>Şagirdlər Paneli</h1>
-    <div id="testList">
-        <!-- Testlər burada göstəriləcək -->
-    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <h1>Testlər</h1>
+  <div id="testList"></div> <!-- Testlərin siyahısı buraya yüklənəcək -->
 
-    <script>
-        // Firebase konfiqurasiyası
-        const firebaseConfig = {
-            apiKey: "AIzaSyC3pQWVyeFg8ZzpQcRmgJsWbyS9Dl73OQk",
-            authDomain: "examsite-88677.firebaseapp.com",
-            projectId: "examsite-88677",
-            storageBucket: "examsite-88677.firebasestorage.app",
-            messagingSenderId: "222884334734",
-            appId: "1:222884334734:web:6946d2354e0f779bc84ddf",
-            measurementId: "G-JG51X31NXX"
-        };
+  <script>
+    // Firestore-dan testləri alıb göstərmək
+    db.collection('tests').onSnapshot(snapshot => {
+      const testList = document.getElementById('testList');
+      testList.innerHTML = '';  // Əvvəlki testləri silirik
 
-        // Firebase-in başlatılması
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+      snapshot.forEach(doc => {
+        const test = doc.data();
+        const testElement = document.createElement('div');
+        testElement.classList.add('test-item');
+        testElement.innerHTML = `
+          <h3>${test.name}</h3>
+          <p>${test.description}</p>
+        `;
+        testList.appendChild(testElement);
+      });
+    });
+  </script>
 
-        // Firestore-dan testləri almaq
-        db.collection('tests').onSnapshot(snapshot => {
-            const testList = document.getElementById('testList');
-            testList.innerHTML = ''; // Hər yeni yükləmədə mövcud testləri təmizləyirik
-            snapshot.forEach(doc => {
-                const test = doc.data();
-                const testElement = document.createElement('div');
-                testElement.classList.add('test-item');
-                testElement.innerHTML = `<h3>${test.name}</h3><p>${test.description}</p>`;
-                testList.appendChild(testElement);
-            });
-        });
-    </script>
 </body>
 </html>
-
-
-
